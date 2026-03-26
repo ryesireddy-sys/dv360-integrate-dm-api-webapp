@@ -3,23 +3,24 @@ import requests
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from fastapi.responses import FileResponse
 from typing import List, Optional
 import hashlib
 import re
 
-app = FastAPI(title="DV360 Data Manager Pass-Through (Stateless)")
-
-@app.get("/")
-async def root():
-    return {"message": "Server is running"}
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # For local testing, allow all origins
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+def root():
+    return FileResponse("dv360_audience_manager.html")
 
 class Member(BaseModel):
     email: str
