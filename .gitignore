@@ -1,0 +1,5 @@
+__pycache__/
+.DS_Store
+test_payload.py
+http.log
+uvicorn.log

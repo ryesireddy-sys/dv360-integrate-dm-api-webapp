@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DV360 Audience Data Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Display:wght@700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* DV360 / Google Marketing Platform greens */
+    --dv-green:        #1e8e3e;
+    --dv-green-dark:   #0d652d;
+    --dv-green-mid:    #2da44e;
+    --dv-green-light:  #e6f4ea;
+    --dv-green-xlight: #f0faf2;
+    --dv-green-border: #b7dfbf;
+
+    /* Accent – Google teal (secondary DV360 color) */
+    --dv-teal:         #00897b;
+    --dv-teal-light:   #e0f2f1;
+
+    /* Google brand neutrals */
+    --google-blue:     #1a73e8;
+    --google-yellow:   #f9ab00;
+    --google-red:      #d93025;
+
+    /* Surfaces */
+    --surface:         #ffffff;
+    --surface-2:       #f8faf8;
+    --surface-3:       #eef5ef;
+    --border:          #d4e3d6;
+    --border-dark:     #b0ccb4;
+
+    /* Text */
+    --text-primary:    #1a2e1c;
+    --text-secondary:  #3d5c40;
+    --text-tertiary:   #6b8c6e;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px rgba(30,80,35,0.08), 0 1px 3px rgba(30,80,35,0.05);
+    --shadow-md: 0 2px 6px rgba(30,80,35,0.12), 0 4px 12px rgba(30,80,35,0.08);
+    --shadow-lg: 0 4px 12px rgba(30,80,35,0.15), 0 8px 24px rgba(30,80,35,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Google Sans', sans-serif;
+    background: var(--surface-2);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  /* ── TOP NAV ── */
+  .topbar {
+    background: #fff;
+    border-bottom: 2px solid var(--dv-green);
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 28px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(30,142,62,0.12);
+  }
+
+  /* DV360 Logo SVG mark */
+  .dv360-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .dv360-wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .dv360-name {
+    font-family: 'Google Sans Display', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    /* DV360 brand gradient green */
+    background: linear-gradient(90deg, #1e8e3e 0%, #00897b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .dv360-sub {
+    font-size: 9.5px;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+  .topbar-sep {
+    width: 1px;
+    height: 30px;
+    background: var(--border);
+    margin: 0 18px;
+  }
+  .topbar-tool {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .topbar-tool span {
+    color: var(--dv-green);
+  }
+  .topbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-pill {
+    background: var(--dv-green-light);
+    color: var(--dv-green-dark);
+    border: 1px solid var(--dv-green-border);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  .gmp-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface-3);
+  }
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--dv-green), var(--dv-teal));
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 36px 24px 100px;
+  }
+
+  .page-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 30px;
+    padding: 22px 24px;
+    background: linear-gradient(135deg, var(--dv-green-xlight) 0%, #e8f5f0 100%);
+    border: 1px solid var(--dv-green-border);
+    border-radius: 14px;
+    border-left: 4px solid var(--dv-green);
+  }
+  .page-head-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .page-head h1 {
+    font-family: 'Google Sans Display', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--dv-green-dark);
+    margin-bottom: 4px;
+  }
+  .page-head p {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    max-width: 620px;
+  }
+
+  /* ── STEP BAR ── */
+  .steps {
+    display: flex;
+    align-items: center;
+    margin-bottom: 26px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: var(--shadow-sm);
+    gap: 4px;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+  .step:not(:last-child)::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 6px;
+  }
+  .step.done:not(:last-child)::after { background: var(--dv-green); }
+  .step-dot {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    border: 2px solid var(--border);
+    color: var(--text-tertiary);
+    background: #fff;
+    flex-shrink: 0;
+    transition: all 0.25s;
+  }
+  .step.done .step-dot  { background: var(--dv-green); border-color: var(--dv-green); color: #fff; }
+  .step.active .step-dot {
+    background: #fff;
+    border-color: var(--dv-green);
+    color: var(--dv-green);
+    box-shadow: 0 0 0 3px var(--dv-green-light);
+  }
+  .step-lbl {
+    font-size: 12px; font-weight: 500;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+  .step.active .step-lbl { color: var(--dv-green); font-weight: 600; }
+  .step.done .step-lbl   { color: var(--text-secondary); }
+
+  /* ── CARD ── */
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: var(--shadow-md); }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 24px;
+    background: linear-gradient(90deg, var(--dv-green-xlight) 0%, #fff 60%);
+    border-bottom: 1px solid var(--border);
+  }
+  .cicon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .cicon-green  { background: var(--dv-green-light); }
+  .cicon-teal   { background: var(--dv-teal-light); }
+  .cicon-yellow { background: #fef7e0; }
+  .cicon-dark   { background: var(--dv-green-dark); }
+
+  .card-head-text .ctitle {
+    font-size: 14.5px; font-weight: 700;
+    color: var(--dv-green-dark);
+  }
+  .card-head-text .csub {
+    font-size: 12px; color: var(--text-tertiary);
+    margin-top: 1px;
+  }
+  .card-body { padding: 22px 24px; }
+
+  /* ── SOURCE TABS ── */
+  .src-tabs { display: flex; gap: 14px; margin-bottom: 20px; }
+  .src-tab {
+    flex: 1;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    cursor: pointer;
+    background: #fff;
+    text-align: left;
+    transition: all 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+  .src-tab::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--dv-green-xlight), #fff);
+    opacity: 0;
+    transition: opacity 0.18s;
+  }
+  .src-tab:hover { border-color: var(--dv-green); }
+  .src-tab:hover::before { opacity: 1; }
+  .src-tab.active {
+    border-color: var(--dv-green);
+    box-shadow: 0 0 0 1px var(--dv-green), var(--shadow-sm);
+  }
+  .src-tab.active::before { opacity: 1; }
+  .src-tab > * { position: relative; }
+  .src-tab .t-ico  { font-size: 26px; margin-bottom: 8px; display: block; }
+  .src-tab .t-name { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+  .src-tab .t-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.45; }
+  .src-tab .t-chk {
+    position: absolute; top: 10px; right: 10px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--dv-green);
+    color: #fff;
+    font-size: 11px;
+    display: none; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+  .src-tab.active .t-chk { display: flex; }
+
+  /* ── DROP ZONE ── */
+  .dz {
+    border: 2px dashed var(--border-dark);
+    border-radius: 12px;
+    padding: 36px 24px;
+    text-align: center;
+    background: var(--surface-3);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+  .dz.on   { display: block; }
+  .dz:hover, .dz.drag {
+    border-color: var(--dv-green);
+    background: var(--dv-green-light);
+  }
+  .dz-ico  { font-size: 40px; margin-bottom: 10px; }
+  .dz-main { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .dz-sub  { font-size: 12px; color: var(--text-tertiary); }
+  .lnk     { color: var(--dv-green); cursor: pointer; font-weight: 600; }
+
+  /* ── FILE CHIP ── */
+  .f-chip {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    background: var(--dv-green-light);
+    border: 1px solid var(--dv-green-border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 12px;
+  }
+  .f-chip.on { display: flex; }
+  .f-chip-ico { font-size: 26px; }
+  .f-chip-info { flex: 1; }
+  .f-chip-name { font-size: 13px; font-weight: 600; color: var(--dv-green-dark); }
+  .f-chip-meta { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+  .f-rm {
+    background: none; border: none; cursor: pointer;
+    color: var(--text-tertiary); font-size: 18px;
+    padding: 4px 6px; border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .f-rm:hover { background: rgba(0,0,0,0.07); color: var(--google-red); }
+
+  /* ── SHEETS PANEL ── */
+  .sp { display: none; }
+  .sp.on { display: block; }
+  .sp-row { display: flex; gap: 12px; margin-bottom: 14px; }
+  .sp-row .ff { flex: 1; }
+
+  /* ── FORM FIELDS ── */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .ff { display: flex; flex-direction: column; gap: 5px; }
+  .fl {
+    font-size: 11.5px; font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .fl .req { color: var(--google-red); margin-left: 2px; }
+  .fl .opt { color: var(--text-tertiary); font-weight: 400; text-transform: none; font-size: 11px; margin-left: 4px; letter-spacing: 0; }
+  .fi {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Google Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: #fff;
+    transition: all 0.15s;
+    outline: none;
+    width: 100%;
+  }
+  .fi::placeholder { color: var(--text-tertiary); }
+  .fi:focus {
+    border-color: var(--dv-green);
+    box-shadow: 0 0 0 3px var(--dv-green-light);
+  }
+  .fi.mono {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13px; letter-spacing: 0.5px;
+  }
+  .fh { font-size: 11px; color: var(--text-tertiary); line-height: 1.45; margin-top: 2px; }
+  .fh a { color: var(--dv-green); text-decoration: none; }
+
+  /* ── SELECT ── */
+  .fsel {
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Google Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231e8e3e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E") right 14px center no-repeat;
+    appearance: none; cursor: pointer; outline: none;
+    transition: all 0.15s; width: 100%;
+  }
+  .fsel:focus {
+    border-color: var(--dv-green);
+    box-shadow: 0 0 0 3px var(--dv-green-light);
+  }
+
+  /* ── TOGGLE ── */
+  .tog-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px;
+    background: var(--surface-3);
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    gap: 12px;
+  }
+  .tog-info .tog-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .tog-info .tog-desc  { font-size: 11.5px; color: var(--text-tertiary); margin-top: 2px; }
+  .sw { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+  .sw input { opacity: 0; width: 0; height: 0; }
+  .sw-track {
+    position: absolute; inset: 0;
+    background: var(--border-dark);
+    border-radius: 24px;
+    cursor: pointer;
+    transition: 0.25s;
+  }
+  .sw-track::before {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    bottom: 3px; left: 3px;
+    transition: 0.25s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  }
+  .sw input:checked + .sw-track { background: var(--dv-green); }
+  .sw input:checked + .sw-track::before { transform: translateX(20px); }
+
+  /* ── SCHEDULER ── */
+  .sched-panel {
+    display: none;
+    margin-top: 14px;
+    padding: 18px;
+    background: var(--dv-teal-light);
+    border-radius: 12px;
+    border: 1.5px solid #80cbc4;
+    animation: slideD 0.22s ease;
+  }
+  .sched-panel.on { display: block; }
+  @keyframes slideD {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .sched-title {
+    font-size: 13px; font-weight: 700;
+    color: var(--dv-teal);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sched-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .cron-row {
+    grid-column: 1/-1;
+    background: #fff;
+    border: 1.5px solid #80cbc4;
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12.5px;
+    color: var(--dv-teal);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cron-lbl { font-family: 'Google Sans', sans-serif; font-size: 11px; color: var(--text-tertiary); }
+
+  /* ── NEW AUDIENCE ── */
+  .new-aud {
+    display: none;
+    padding: 16px 18px;
+    background: #fffbea;
+    border: 1.5px solid #f9ab00;
+    border-radius: 10px;
+    margin-top: 14px;
+    animation: slideD 0.2s ease;
+  }
+  .new-aud.on { display: block; }
+  .new-aud-hd {
+    font-size: 13px; font-weight: 700;
+    color: #b06000;
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  /* ── CHIPS ── */
+  .chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  .chip-green  { background: var(--dv-green-light);  color: var(--dv-green-dark);  border: 1px solid var(--dv-green-border); }
+  .chip-teal   { background: var(--dv-teal-light);   color: var(--dv-teal);        border: 1px solid #80cbc4; }
+  .chip-yellow { background: #fef7e0;                color: #b06000;               border: 1px solid #f9c74f; }
+  .chip-blue   { background: #e8f0fe;                color: #174ea6;               border: 1px solid #aac4f5; }
+
+  /* ── API PREVIEW ── */
+  .api-tog {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer;
+    font-size: 13px; font-weight: 600;
+    color: var(--text-secondary);
+    margin-top: 18px;
+    user-select: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .api-tog:hover { background: var(--dv-green-light); color: var(--dv-green-dark); }
+  .api-tog .chv { font-size: 9px; transition: transform 0.2s; }
+  .api-tog.open .chv { transform: rotate(180deg); }
+  .code-box {
+    display: none;
+    background: #0f1f10;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin-top: 8px;
+    overflow-x: auto;
+    border: 1px solid #1e4021;
+    animation: slideD 0.2s ease;
+  }
+  .code-box.on { display: block; }
+  .code-box pre {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px; line-height: 1.75;
+    color: #b9f0bb;
+  }
+  .ck  { color: #68d391; }
+  .cs  { color: #9ae6b4; }
+  .cn  { color: #fbd38d; }
+  .cy  { color: #76e4f7; }
+  .cc  { color: #4a6b4c; }
+
+  /* ── PROGRESS ── */
+  .prog { display: none; margin-top: 14px; }
+  .prog.on { display: block; }
+  .prog-bg { height: 5px; background: var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 7px; }
+  .prog-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--dv-green), var(--dv-teal));
+    border-radius: 5px; width: 0%;
+    transition: width 0.35s ease;
+  }
+  .prog-lbl { font-size: 12px; color: var(--text-secondary); }
+
+  /* ── SUCCESS ── */
+  .ok-banner {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 20px 22px;
+    background: var(--dv-green-light);
+    border: 1.5px solid var(--dv-green-border);
+    border-left: 5px solid var(--dv-green);
+    border-radius: 12px;
+    margin-top: 20px;
+    animation: slideD 0.3s ease;
+  }
+  .ok-ico { font-size: 30px; flex-shrink: 0; }
+  .ok-body h3 { font-size: 15px; font-weight: 700; color: var(--dv-green-dark); margin-bottom: 5px; }
+  .ok-body p  { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+  .ok-meta { margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* ── ACTION BAR ── */
+  .action-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+    padding: 18px 24px;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow-md);
+    margin-top: 24px;
+  }
+  .action-msg { font-size: 13px; color: var(--text-secondary); }
+  .action-btns { display: flex; align-items: center; gap: 12px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-family: 'Google Sans', sans-serif;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: none;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--dv-green);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(30,142,62,0.35);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--dv-green-dark);
+    box-shadow: 0 4px 12px rgba(30,142,62,0.45);
+    transform: translateY(-1px);
+  }
+  .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+  .btn-outline {
+    background: #fff;
+    color: var(--dv-green);
+    border: 1.5px solid var(--dv-green-border);
+  }
+  .btn-outline:hover { background: var(--dv-green-light); border-color: var(--dv-green); }
+  .btn-ghost {
+    background: none;
+    color: var(--text-secondary);
+    border: 1.5px solid transparent;
+  }
+  .btn-ghost:hover { background: var(--surface-3); border-color: var(--border); }
+
+  /* ── DIVIDER ── */
+  .div { height: 1px; background: var(--border); margin: 18px 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .grid2 { grid-template-columns: 1fr; }
+    .sched-grid { grid-template-columns: 1fr; }
+    .src-tabs { flex-direction: column; }
+    .action-bar { flex-direction: column; align-items: stretch; }
+    .action-btns { justify-content: flex-end; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topbar">
+  <!-- DV360 SVG Logo -->
+  <a class="dv360-logo" href="#">
+    <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Google Marketing Platform / DV360 icon: stylized play/display shape -->
+      <rect width="44" height="44" rx="10" fill="url(#dv-grad)"/>
+      <!-- Play triangle -->
+      <path d="M16 13L32 22L16 31V13Z" fill="white" opacity="0.95"/>
+      <!-- Small circle accent -->
+      <circle cx="13" cy="13" r="4" fill="white" opacity="0.6"/>
+      <defs>
+        <linearGradient id="dv-grad" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#1e8e3e"/>
+          <stop offset="100%" stop-color="#00897b"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="dv360-wordmark">
+      <span class="dv360-name">Display &amp; Video 360</span>
+      <span class="dv360-sub">Google Marketing Platform</span>
+    </div>
+  </a>
+  <div class="topbar-sep"></div>
+  <span class="topbar-tool">Audience <span>Data Manager</span></span>
+
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- HEADER BANNER -->
+  <div class="page-head">
+    <div class="page-head-icon">📡</div>
+    <div>
+      <h1>Push Audience Data to DV360</h1>
+      <p>Upload first-party audience segments directly to Display &amp; Video 360 via the Audience Data Manager API. Supports CSV uploads and live Google Sheets sync with scheduled automation.</p>
+    </div>
+  </div>
+
+  <!-- STEP INDICATOR -->
+  <div class="steps">
+    <div class="step done" id="s1"><div class="step-dot">✓</div><span class="step-lbl">Data Source</span></div>
+    <div class="step active" id="s2"><div class="step-dot">2</div><span class="step-lbl">DV360 Target</span></div>
+    <div class="step" id="s3"><div class="step-dot">3</div><span class="step-lbl">Audience List</span></div>
+    <div class="step" id="s4"><div class="step-dot">4</div><span class="step-lbl">Push &amp; Review</span></div>
+  </div>
+
+  <!-- ── CARD 1: DATA SOURCE ── -->
+  <div class="card">
+    <div class="card-head">
+      <div class="cicon cicon-green">📂</div>
+      <div class="card-head-text">
+        <div class="ctitle">1 — Data Source</div>
+        <div class="csub">Upload a CSV or connect a live Google Spreadsheet</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <div class="src-tabs">
+        <button class="src-tab active" id="tab-csv" onclick="switchSrc('csv')">
+          <span class="t-chk">✓</span>
+          <span class="t-ico">📄</span>
+          <div class="t-name">CSV Upload</div>
+          <div class="t-desc">Upload a flat file containing hashed emails, IDFAs, GAIDs or phone numbers</div>
+        </button>
+        <button class="src-tab" id="tab-sheets" onclick="switchSrc('sheets')">
+          <span class="t-chk">✓</span>
+          <span class="t-ico">📊</span>
+          <div class="t-name">Google Sheets</div>
+          <div class="t-desc">Connect a live sheet and enable automated scheduled audience syncs</div>
+        </button>
+      </div>
+
+      <!-- DROP ZONE -->
+      <div class="dz on" id="dz"
+           onclick="document.getElementById('fi').click()"
+           ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event)">
+        <div class="dz-ico">⬆️</div>
+        <div class="dz-main">Drop your CSV here, or <span class="lnk">browse files</span></div>
+        <div class="dz-sub">Supported: .csv &nbsp;·&nbsp; Max 500 MB &nbsp;·&nbsp; Columns: email, phone, idfa, gaid</div>
+        <input type="file" id="fi" accept=".csv" style="display:none" onchange="pickFile(event)">
+      </div>
+      <div class="f-chip" id="fchip">
+        <span class="f-chip-ico">📄</span>
+        <div class="f-chip-info">
+          <div class="f-chip-name" id="fname">—</div>
+          <div class="f-chip-meta" id="fmeta">—</div>
+        </div>
+        <button class="f-rm" onclick="rmFile()">✕</button>
+      </div>
+
+      <!-- SHEETS PANEL -->
+      <div class="sp" id="sheetsP">
+        <div class="sp-row">
+          <div class="ff" style="flex:1">
+            <label class="fl">Spreadsheet URL <span class="req">*</span></label>
+            <input type="url" class="fi" id="shUrl" placeholder="https://docs.google.com/spreadsheets/d/..." oninput="updPrev()">
+            <div class="fh">Share sheet with <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fc989d889dd1919d929d9b998ebc988acfcaccd19d8c95d2959d91d29b8f998e8a959f999d9f9f93899288d29f9391">[email&#160;protected]</a></strong> as Viewer</div>
+          </div>
+          <div class="ff" style="min-width:130px">
+            <label class="fl">Tab Name</label>
+            <input type="text" class="fi" id="shTab" placeholder="Sheet1" oninput="updPrev()">
+          </div>
+        </div>
+
+        <!-- SCHEDULER TOGGLE -->
+        <div class="tog-row">
+          <div class="tog-info">
+            <div class="tog-title">🕐 Enable Scheduled Sync</div>
+            <div class="tog-desc">Auto-push updated audience data on a recurring schedule</div>
+          </div>
+          <label class="sw">
+            <input type="checkbox" id="schedTog" onchange="toggleSched()">
+            <span class="sw-track"></span>
+          </label>
+        </div>
+
+        <!-- SCHEDULER CONFIG -->
+        <div class="sched-panel" id="schedP">
+          <div class="sched-title">⚙️ Schedule Configuration</div>
+          <div class="sched-grid">
+            <div class="ff">
+              <label class="fl">Frequency</label>
+              <select class="fsel" id="sFreq" onchange="buildCron()">
+                <option value="hourly">Hourly</option>
+                <option value="daily" selected>Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="custom">Custom (cron)</option>
+              </select>
+            </div>
+            <div class="ff" id="sTimeG">
+              <label class="fl">Time (UTC)</label>
+              <input type="time" class="fi" id="sTime" value="02:00" onchange="buildCron()">
+            </div>
+            <div class="ff" id="sDayG" style="display:none">
+              <label class="fl">Day</label>
+              <select class="fsel" id="sDay" onchange="buildCron()">
+                <option value="1">Monday</option><option value="2">Tuesday</option>
+                <option value="3">Wednesday</option><option value="4">Thursday</option>
+                <option value="5">Friday</option><option value="6">Saturday</option>
+                <option value="0">Sunday</option>
+              </select>
+            </div>
+            <div class="ff" id="sCustG" style="display:none; grid-column:1/-1">
+              <label class="fl">Custom Cron</label>
+              <input type="text" class="fi mono" id="sCust" placeholder="0 2 * * *" oninput="buildCron()">
+            </div>
+            <div class="cron-row">
+              <span class="cron-lbl">cron expression:</span>
+              <span id="cronOut">0 2 * * *</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── CARD 2: DV360 TARGET ── -->
+  <div class="card">
+    <div class="card-head">
+      <div class="cicon cicon-teal">🎯</div>
+      <div class="card-head-text">
+        <div class="ctitle">2 — DV360 Target</div>
+        <div class="csub">Identify the Partner or Advertiser receiving the audience</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="ff" style="margin-bottom:18px">
+        <label class="fl">Google OAuth Access Token <span class="req">*</span></label>
+        <input type="text" class="fi mono" id="accessToken" placeholder="ya29.a0..." oninput="updPrev()">
+        <div class="fh">Paste your valid OAuth 2.0 Access Token here (e.g. from Google OAuth Playground)</div>
+      </div>
+      <div class="grid2" style="margin-bottom:18px">
+        <div class="ff">
+          <label class="fl">Partner ID <span class="req">*</span></label>
+          <input type="text" class="fi mono" id="pid" placeholder="e.g. 1234567" oninput="updPrev()">
+          <div class="fh">Numeric DV360 Partner ID from the platform URL</div>
+        </div>
+        <div class="ff">
+          <label class="fl">Advertiser ID <span class="opt">(optional)</span></label>
+          <input type="text" class="fi mono" id="aid" placeholder="e.g. 9876543" oninput="updPrev()">
+          <div class="fh">Scopes audience to a specific advertiser under the partner</div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="ff">
+          <label class="fl">Identifier Type <span class="req">*</span></label>
+          <select class="fsel" id="idType" onchange="updPrev()">
+            <option value="EMAIL">Email (SHA-256 hashed)</option>
+            <option value="PHONE">Phone (SHA-256 hashed)</option>
+            <option value="IDFA">IDFA (iOS)</option>
+            <option value="GAID">GAID (Android)</option>
+            <option value="COOKIE">Cookie / Device ID</option>
+          </select>
+        </div>
+        <div class="ff">
+          <label class="fl">Upload Operation</label>
+          <select class="fsel" id="upType" onchange="updPrev()">
+            <option value="ADD">Add users to list</option>
+            <option value="REMOVE">Remove users from list</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 3: AUDIENCE LIST ── -->
+  <div class="card">
+    <div class="card-head">
+      <div class="cicon cicon-yellow">👥</div>
+      <div class="card-head-text">
+        <div class="ctitle">3 — Audience List</div>
+        <div class="csub">Target an existing list or auto-create a new one</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="grid2" style="margin-bottom:4px">
+        <div class="ff">
+          <label class="fl">Audience List ID <span class="opt">(blank = create new)</span></label>
+          <input type="text" class="fi mono" id="alid" placeholder="e.g. 1234567890" oninput="onALIDChange()">
+          <div class="fh">Found in DV360 → Audiences → <a href="#">Your List</a></div>
+        </div>
+        <div class="ff">
+          <label class="fl">Membership Duration</label>
+          <select class="fsel" id="memDays" onchange="updPrev()">
+            <option value="7">7 days</option>
+            <option value="14">14 days</option>
+            <option value="30" selected>30 days</option>
+            <option value="60">60 days</option>
+            <option value="90">90 days</option>
+            <option value="180">180 days</option>
+            <option value="365">365 days</option>
+            <option value="540">540 days (max)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- NEW AUDIENCE PANEL -->
+      <div class="new-aud on" id="newAud">
+        <div class="new-aud-hd">✨ New audience list will be created</div>
+        <div class="grid2">
+          <div class="ff">
+            <label class="fl">Audience Name <span class="req">*</span></label>
+            <input type="text" class="fi" id="audName" placeholder="e.g. High-Value Customers Q2" oninput="updPrev()">
+          </div>
+          <div class="ff">
+            <label class="fl">Description <span class="opt">(optional)</span></label>
+            <input type="text" class="fi" id="audDesc" placeholder="e.g. First-party CRM export" oninput="updPrev()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 4: REVIEW & PUSH ── -->
+  <div class="card">
+    <div class="card-head">
+      <div class="cicon" style="background:var(--dv-green);font-size:18px;width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;">🚀</div>
+      <div class="card-head-text">
+        <div class="ctitle">4 — Review &amp; Push</div>
+        <div class="csub">Validate your configuration and send audience data to DV360</div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <!-- CONFIG CHIPS -->
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px">
+        <span class="chip chip-green" id="chSrc">📄 No file selected</span>
+        <span class="chip chip-teal"  id="chTgt">🎯 No Partner ID</span>
+        <span class="chip chip-yellow" id="chAud">👥 New Audience</span>
+        <span class="chip chip-blue"  id="chSched" style="display:none">🕐 Scheduled Sync ON</span>
+      </div>
+
+      <!-- API PREVIEW -->
+      <div class="api-tog" id="apiTog" onclick="togApi()">
+        <span>⌨️</span>
+        <span style="flex:1">View API request preview</span>
+        <span class="chv">▼</span>
+      </div>
+      <div class="code-box" id="codeBox">
+        <pre id="codeOut"><span class="cc">// Configure fields above to see the API request</span></pre>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="prog" id="progDiv">
+        <div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
+        <div class="prog-lbl" id="progLbl">Initializing...</div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div style="display:none" id="okBanner">
+        <div class="ok-banner">
+          <div class="ok-ico">✅</div>
+          <div class="ok-body">
+            <h3>Audience successfully pushed to DV360!</h3>
+            <p>Your audience list has been created/updated and is now processing. It will be available for campaign targeting within 24–48 hours.</p>
+            <div class="ok-meta">
+              <span class="chip chip-green">Request ID: <strong id="okId">—</strong></span>
+              <span class="chip chip-teal">Records: <strong id="okRec">—</strong></span>
+              <span class="chip chip-blue">Status: Processing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ACTION BAR -->
+  <div class="action-bar">
+    <div class="action-msg" id="actMsg">Fill in required fields to enable upload</div>
+    <div class="action-btns">
+      <button class="btn btn-ghost" onclick="doReset()">↺ Reset</button>
+      <button class="btn btn-outline" onclick="doValidate()">🔍 Validate</button>
+      <button class="btn btn-primary" id="pushBtn" onclick="doPush()">⬆️ Push to DV360</button>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  let srcMode = 'csv', hasFile = false, apiOpen = false;
+
+  // ── SOURCE SWITCH ──
+  function switchSrc(m) {
+    srcMode = m;
+    document.getElementById('tab-csv').classList.toggle('active', m==='csv');
+    document.getElementById('tab-sheets').classList.toggle('active', m==='sheets');
+    document.getElementById('dz').classList.toggle('on', m==='csv');
+    document.getElementById('fchip').classList.remove('on');
+    document.getElementById('sheetsP').classList.toggle('on', m==='sheets');
+    if (m==='csv') {
+      document.getElementById('chSched').style.display = 'none';
+      document.getElementById('schedP').classList.remove('on');
+      document.getElementById('schedTog').checked = false;
+    }
+    updChips(); updPrev();
+  }
+
+  // ── FILE ──
+  function pickFile(e) { const f = e.target.files[0]; if(f) loadFile(f); }
+  function loadFile(f) {
+    hasFile = true;
+    document.getElementById('dz').classList.remove('on');
+    document.getElementById('fchip').classList.add('on');
+    document.getElementById('fname').textContent = f.name;
+    document.getElementById('fmeta').textContent = fmtB(f.size) + ' · CSV · ' + new Date().toLocaleDateString();
+    updChips(); updPrev();
+  }
+  function rmFile() {
+    hasFile = false;
+    document.getElementById('fchip').classList.remove('on');
+    document.getElementById('dz').classList.add('on');
+    document.getElementById('fi').value = '';
+    updChips(); updPrev();
+  }
+  function fmtB(b) {
+    if(b<1024) return b+' B';
+    if(b<1048576) return (b/1024).toFixed(1)+' KB';
+    return (b/1048576).toFixed(1)+' MB';
+  }
+  function dzOver(e) { e.preventDefault(); document.getElementById('dz').classList.add('drag'); }
+  function dzLeave() { document.getElementById('dz').classList.remove('drag'); }
+  function dzDrop(e) {
+    e.preventDefault(); document.getElementById('dz').classList.remove('drag');
+    const f = e.dataTransfer.files[0];
+    if(f && f.name.endsWith('.csv')) loadFile(f);
+  }
+
+  // ── SCHEDULER ──
+  function toggleSched() {
+    const on = document.getElementById('schedTog').checked;
+    document.getElementById('schedP').classList.toggle('on', on);
+    document.getElementById('chSched').style.display = on ? 'inline-flex' : 'none';
+    if(on) buildCron();
+  }
+  function buildCron() {
+    const freq = document.getElementById('sFreq').value;
+    const t = document.getElementById('sTime').value || '02:00';
+    const [hh,mm] = t.split(':');
+    const day = document.getElementById('sDay').value;
+    const cust = document.getElementById('sCust').value;
+    document.getElementById('sDayG').style.display  = freq==='weekly'  ? 'block' : 'none';
+    document.getElementById('sCustG').style.display = freq==='custom'  ? 'block' : 'none';
+    document.getElementById('sTimeG').style.display = freq==='custom'  ? 'none'  : 'block';
+    let c = '0 2 * * *';
+    if(freq==='hourly')   c = `0 * * * *`;
+    else if(freq==='daily')   c = `${mm} ${hh} * * *`;
+    else if(freq==='weekly')  c = `${mm} ${hh} * * ${day}`;
+    else if(freq==='monthly') c = `${mm} ${hh} 1 * *`;
+    else if(freq==='custom')  c = cust || '0 2 * * *';
+    document.getElementById('cronOut').textContent = c;
+  }
+
+  // ── AUDIENCE ID ──
+  function onALIDChange() {
+    const v = document.getElementById('alid').value.trim();
+    document.getElementById('newAud').classList.toggle('on', !v);
+    updChips(); updPrev();
+  }
+
+  // ── CHIPS ──
+  function updChips() {
+    const pid = document.getElementById('pid').value.trim();
+    const alid = document.getElementById('alid').value.trim();
+    const shUrl = document.getElementById('shUrl').value.trim();
+    document.getElementById('chSrc').textContent = srcMode==='csv'
+      ? (hasFile ? '📄 '+(document.getElementById('fname').textContent||'CSV loaded') : '📄 No file selected')
+      : (shUrl ? '📊 Google Sheet connected' : '📊 No sheet URL');
+    document.getElementById('chTgt').textContent = pid ? '🎯 Partner: '+pid : '🎯 No Partner ID';
+    document.getElementById('chAud').textContent = alid ? '👥 List ID: '+alid : '👥 New Audience';
+  }
+
+  // ── API PREVIEW ──
+  function togApi() {
+    apiOpen = !apiOpen;
+    document.getElementById('codeBox').classList.toggle('on', apiOpen);
+    document.getElementById('apiTog').classList.toggle('open', apiOpen);
+    if(apiOpen) updPrev();
+  }
+  function updPrev() {
+    updChips();
+    if(!apiOpen) return;
+    const pid  = document.getElementById('pid').value.trim()   || 'YOUR_PARTNER_ID';
+    const advId= document.getElementById('aid').value.trim();
+    const idt  = document.getElementById('idType').value;
+    const upt  = document.getElementById('upType').value;
+    const alid = document.getElementById('alid').value.trim();
+    const days = document.getElementById('memDays').value;
+    const name = document.getElementById('audName').value.trim() || 'My Audience';
+    const desc = document.getElementById('audDesc').value.trim();
+    const sched= document.getElementById('schedTog').checked;
+    const cron = document.getElementById('cronOut').textContent;
+
+    const srcCmt = srcMode==='csv'
+      ? `<span class="cc">// Source: CSV upload</span>`
+      : `<span class="cc">// Source: Google Sheets${sched?' · cron: '+cron:''}</span>`;
+    const advLine = advId ? `\n  <span class="cy">advertiserId</span>: <span class="cs">"${advId}"</span>,` : '';
+    const descLine= desc  ? `\n  <span class="cy">description</span>:  <span class="cs">"${desc}"</span>,`  : '';
+
+    let code;
+    if(!alid) {
+      code = `${srcCmt}
+<span class="cc">// ── Step 1: Create Audience List ──────────────────────</span>
+<span class="cc">// POST https://displayvideo.googleapis.com/v3/firstAndThirdPartyAudiences</span>
+<span class="ck">const</span> <span class="cy">createBody</span> = {
+  <span class="cy">displayName</span>: <span class="cs">"${name}"</span>,${descLine}
+  <span class="cy">audienceType</span>: <span class="cs">"CUSTOMER_MATCH_CONTACT_INFO"</span>,
+  <span class="cy">membershipDurationDays</span>: <span class="cn">${days}</span>,
+  <span class="cy">partnerMembershipConfigs</span>: [{
+    <span class="cy">targetedPartner</span>: <span class="cs">"${pid}"</span>${advLine}
+  }]
+};
+
+<span class="cc">// ── Step 2: Upload Members ─────────────────────────────</span>
+<span class="cc">// POST .../firstAndThirdPartyAudiences/&lt;new_id&gt;:editCustomerMatchMembers</span>
+<span class="ck">const</span> <span class="cy">uploadBody</span> = {
+  <span class="cy">connectedCaseId</span>:         <span class="cs">"${pid}"</span>,
+  <span class="cy">userDataOperationType</span>:    <span class="cs">"${upt}"</span>,
+  <span class="cy">contactInfo</span>: {
+    <span class="cy">userIdentifierType</span>: <span class="cs">"${idt}"</span>,
+    <span class="cy">hashingAlgorithm</span>:   <span class="cs">"SHA256"</span>
+  }
+};`;
+    } else {
+      code = `${srcCmt}
+<span class="cc">// ── Push to existing Audience List: ${alid} ────────────</span>
+<span class="cc">// POST https://displayvideo.googleapis.com/v3/firstAndThirdPartyAudiences/${alid}:editCustomerMatchMembers</span>
+<span class="ck">const</span> <span class="cy">body</span> = {
+  <span class="cy">connectedCaseId</span>:         <span class="cs">"${pid}"</span>,${advLine}
+  <span class="cy">userDataOperationType</span>:    <span class="cs">"${upt}"</span>,
+  <span class="cy">contactInfo</span>: {
+    <span class="cy">userIdentifierType</span>: <span class="cs">"${idt}"</span>,
+    <span class="cy">hashingAlgorithm</span>:   <span class="cs">"SHA256"</span>
+  }
+};`;
+    }
+    document.getElementById('codeOut').innerHTML = code;
+  }
+
+  function doValidate() {
+    const pid   = document.getElementById('pid').value.trim();
+    const token = document.getElementById('accessToken') ? document.getElementById('accessToken').value.trim() : '';
+    const alid  = document.getElementById('alid').value.trim();
+    const aname = document.getElementById('audName').value.trim();
+    const srcOk = srcMode==='csv' ? hasFile : document.getElementById('shUrl').value.trim()!=='';
+    const errs  = [];
+    if(!srcOk) errs.push('No data source');
+    if(!token) errs.push('Access Token is required for the backend');
+    if(!pid)   errs.push('Partner ID required');
+    if(!alid && !aname) errs.push('Audience name required for new list');
+    const el = document.getElementById('actMsg');
+    if(errs.length) {
+      el.innerHTML = '⚠️ '+errs.join(' · ');
+      el.style.color = '#d93025';
+    } else {
+      el.innerHTML = '✅ Config valid — ready to push';
+      el.style.color = 'var(--dv-green-dark)';
+      if(!apiOpen){ apiOpen=true; document.getElementById('codeBox').classList.add('on'); document.getElementById('apiTog').classList.add('open'); }
+      updPrev();
+    }
+  }
+
+  // ── PUSH ──
+  async function doPush() {
+    doValidate();
+    const pid = document.getElementById('pid').value.trim();
+    const aid = document.getElementById('aid').value.trim();
+    const token = document.getElementById('accessToken').value.trim();
+    if(!pid || !token) return;
+    if(srcMode === 'csv' && !hasFile) return;
+
+    const file = document.getElementById('fi').files[0];
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const text = e.target.result;
+      const lines = text.split(/\r?\n/).filter(l => l.trim());
+      // Strip out all spaces, dashes, parentheses to create a dense string for fuzzy mapping
+      const headers = lines[0].toLowerCase().replace(/[^a-z0-9,]/g, '').split(',');
+      
+      const colMap = {
+          email: headers.findIndex(h => h.includes('email') || h.includes('mail')),
+          phone: headers.findIndex(h => h.includes('phone') || h.includes('mobile') || h.includes('cell') || h.includes('tel')),
+          first_name: headers.findIndex(h => h.includes('first') || h.includes('given') || h.includes('fname')),
+          last_name: headers.findIndex(h => h.includes('last') || h.includes('family') || h.includes('lname') || h.includes('surname')),
+          zip_code: headers.findIndex(h => h.includes('zip') || h.includes('postal') || h.includes('postcode')),
+          country: headers.findIndex(h => h.includes('country') || h.includes('region') || h.includes('nation')),
+      };
+
+      const members = [];
+      for (let i=1; i < lines.length; i++) { // skip header
+          const cols = lines[i].split(',').map(c => c.trim());
+          const member = {};
+          
+          if (colMap.email !== -1 && cols[colMap.email]) member.email = cols[colMap.email];
+          if (colMap.phone !== -1 && cols[colMap.phone]) member.phone = cols[colMap.phone];
+          if (colMap.first_name !== -1 && cols[colMap.first_name]) member.first_name = cols[colMap.first_name];
+          if (colMap.last_name !== -1 && cols[colMap.last_name]) member.last_name = cols[colMap.last_name];
+          if (colMap.zip_code !== -1 && cols[colMap.zip_code]) member.zip_code = cols[colMap.zip_code];
+          if (colMap.country !== -1 && cols[colMap.country]) member.country = cols[colMap.country];
+          
+          // Fallback if no header matched, we just assume column 0 is email
+          if (!member.email && colMap.email === -1 && cols[0]) {
+              member.email = cols[0];
+          }
+          
+          if (member.email) {
+              members.push(member);
+          }
+      }
+
+      const btn = document.getElementById('pushBtn');
+      btn.disabled = true; btn.textContent = '⏳ Uploading to Backend...';
+      const pDiv = document.getElementById('progDiv');
+      const fill = document.getElementById('progFill');
+      const lbl  = document.getElementById('progLbl');
+      pDiv.classList.add('on');
+      
+      fill.style.width = '30%';
+      lbl.textContent  = 'Sending data to local FastAPI server...';
+
+      const alid = document.getElementById('alid').value.trim() || String(Math.floor(Math.random()*9e9+1e9));
+
+      try {
+        const payload = {
+            access_token: token,
+            partner_id: pid || null,
+            advertiser_id: aid || null,
+            user_list_id: alid,
+            member_list: members
+        };
+
+        const res = await fetch('http://127.0.0.1:8000/upload-audience', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        
+        if (!res.ok) {
+            throw new Error(data.detail || 'Upload failed');
+        }
+
+        fill.style.width = '100%';
+        lbl.textContent  = 'Upload complete ✓';
+        showOK(data.request_id || alid, members.length);
+      } catch (err) {
+        alert("API Error: " + err.message);
+        btn.disabled = false; btn.textContent = '⬆️ Push to DV360';
+        fill.style.width = '0%';
+        pDiv.classList.remove('on');
+      }
+    };
+    if (file) reader.readAsText(file);
+  }
+
+  function showOK(reqId, count) {
+    document.getElementById('okId').textContent = reqId;
+    document.getElementById('okRec').textContent = count.toLocaleString();
+    document.getElementById('okBanner').style.display = 'block';
+    document.getElementById('pushBtn').textContent = '✅ Pushed!';
+    document.getElementById('actMsg').innerHTML   = '✅ Audience pushed to DV360 successfully';
+    document.getElementById('actMsg').style.color = 'var(--dv-green-dark)';
+    ['s1','s2','s3','s4'].forEach(id=>{
+      const el=document.getElementById(id);
+      el.classList.add('done'); el.classList.remove('active');
+      el.querySelector('.step-dot').textContent='✓';
+    });
+  }
+
+  function doReset() {
+    const btn=document.getElementById('pushBtn');
+    btn.disabled=false; btn.textContent='⬆️ Push to DV360';
+    document.getElementById('progDiv').classList.remove('on');
+    document.getElementById('progFill').style.width='0%';
+    document.getElementById('okBanner').style.display='none';
+    document.getElementById('actMsg').textContent='Fill in required fields to enable upload';
+    document.getElementById('actMsg').style.color='var(--text-secondary)';
+    ['s1','s2','s3','s4'].forEach(id=>{
+      const el=document.getElementById(id);
+      el.classList.remove('done');
+      if(id==='s2'){ el.classList.add('active'); el.querySelector('.step-dot').textContent='2'; }
+      else if(id==='s3'){ el.classList.remove('active'); el.querySelector('.step-dot').textContent='3'; }
+      else if(id==='s4'){ el.classList.remove('active'); el.querySelector('.step-dot').textContent='4'; }
+    });
+  }
+</script>
+</body>
+</html>
